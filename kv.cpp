@@ -1,6 +1,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <string>
+#include <sstream>
+#include <vector>
 
 std::unordered_map<int, std::string> kvMap;
 
@@ -15,14 +17,28 @@ void saveToDatabase() {
 }
 
 std::string validateOperation(const std::string& cmd) {
-    if (cmd == "") { return "iv";}
+    if (cmd == "") { return "iv"; }
     else if (cmd == "quit") { return cmd; }
 
     char op = cmd[0];
 
-    if (op != 'p' || op != 'g' || op != 'd' || op != 'c' || op != 'a') { return "iv"; }
+    if (op == 'p' || op == 'g' || op == 'd' || op == 'c' || op == 'a') {
+        return cmd;  // Valid operation
+    }
+    
+    return "iv";  // Invalid operation
+}
 
-    return cmd;
+std::vector<std::string> split(std::string str) {
+    std::vector<std::string> result;
+    std::stringstream ss(str);
+    std::string token;
+
+    while (std::getline(ss, token, ',')) {
+        result.push_back(token);
+    }
+
+    return result;
 }
 
 std::string getInput() {
@@ -45,6 +61,46 @@ std::string getInput() {
 
 }
 
+void put(std::string command) {
+    std::vector<std::string> tokened = split(command);
+    // TODO: Validate command
+
+    int key = std::stoi(tokened[1]);   
+    std::string val = tokened[2];
+    kvMap[key] = val;
+}
+
+void get(std::string command) {
+    std::vector<std::string> tokened = split(command);
+    // TODO: Validate command, validate key
+
+    int key = std::stoi(tokened[1]);
+    std::string val = kvMap[key];
+
+    std::string message = std::to_string(key) + "," + val;
+    std::cout << message << std:: endl;
+}
+
+void del(std::string command) {
+    std::vector<std::string> tokened = split(command);
+    // TODO: Validate command
+
+    int key = std::stoi(tokened[1]);
+
+    if (kvMap.find(key) != kvMap.end()) {
+        kvMap.erase(key);
+        std::cout << key << " deleted" << std::endl;
+    } else {
+        std::cout << key << " not found" << std::endl;
+    }
+}
+
+void all() {
+    for (const auto& pair : kvMap) {
+        std::cout << pair.first << "," << pair.second << std::endl;
+    }
+}
+
 int main() {
     populateMap();
 
@@ -59,13 +115,29 @@ int main() {
         else if (command == "quit") {
             saveToDatabase();
 
-            run == 0;
+            run = 0;
             break;
         }
 
         char operation = command[0];
 
-        // TODO: Switch statement on operation
+        switch (operation) {
+            case 'p':
+                put(command);
+                break;
+            case 'g':
+                get(command);
+                break;
+            case 'd':
+                del(command);
+                break;
+            case 'c':
+                kvMap.clear();
+                break;
+            case 'a':
+                all();
+                break;
+        }       
     }
     
     return 0;
