@@ -7,14 +7,6 @@
 
 std::unordered_map<int, std::string> kvMap;
 
-void populateMap() {
-    // TODO: Implement populating kvMap from database.txt
-}
-
-void saveToDatabase() {
-    // TODO: Implement saving kvMap to database.txt
-}
-
 std::vector<std::string> split(std::string str) {
     std::vector<std::string> result;
     std::stringstream ss(str);
@@ -25,6 +17,50 @@ std::vector<std::string> split(std::string str) {
     }
 
     return result;
+}
+
+void populateMap() {
+    std::ifstream file("database.txt");
+    
+    if (!file) {
+        std::ofstream outputFile("database.txt");
+        outputFile.close();
+        return;
+    }
+    
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line.empty()) continue;
+        
+        std::vector<std::string> tokened = split(line);
+        
+        if (tokened.size() != 2) continue;
+        
+        try {
+            int key = std::stoi(tokened[0]);   
+            std::string val = tokened[1];
+            kvMap[key] = val;
+        } catch (...) {
+            continue;
+        }
+    }
+    
+    file.close();
+}
+
+void saveToDatabase() {
+    std::ofstream file("database.txt");
+    
+    if (!file) {
+        std::cerr << "Error: Could not open database.txt for writing" << std::endl;
+        exit(1);
+    }
+    
+    for (const auto& pair : kvMap) {
+        file << pair.first << "," << pair.second << std::endl;
+    }
+    
+    file.close();
 }
 
 void put(std::string command) {

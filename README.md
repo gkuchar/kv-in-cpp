@@ -23,7 +23,7 @@ KV is a lightweight, persistent key-value store that allows you to insert, retri
 ### Compilation
 
 ```bash
-g++ -std=c++11 -o kv kv.cpp
+g++ kv.cpp -o kv
 ```
 
 ## Usage
