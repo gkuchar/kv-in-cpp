@@ -19,11 +19,27 @@ KV is a lightweight, persistent key-value store that allows you to insert, retri
 ### Prerequisites
 - C++11 or later compiler (g++, clang++)
 - Standard C++ library
+- Make (optional, for using Makefile)
 
 ### Compilation
 
+**Using Makefile (recommended):**
 ```bash
-g++ kv.cpp -o kv
+make
+```
+
+**Manual compilation:**
+```bash
+g++ -std=c++11 -Wall -Wextra -o kv kv.cpp
+```
+
+### Makefile Targets
+
+```bash
+make           # Compile the program
+make clean     # Remove object files and executable
+make cleanall  # Remove everything including database.txt
+make run       # Compile and run (no arguments)
 ```
 
 ## Usage
@@ -201,6 +217,7 @@ When attempting to get or delete a non-existent key:
 ```
 .
 ├── kv.cpp          # Main source code
+├── Makefile        # Build configuration
 ├── database.txt    # Persistent storage (auto-generated)
 └── README.md       # This file
 ```
